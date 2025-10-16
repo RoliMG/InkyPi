@@ -9,7 +9,7 @@ from io import BytesIO
 from PIL.ImageFile import ImageFile
 from plugins.base_plugin.base_plugin import BasePlugin
 
-from src.utils.image_utils import pad_image_blur
+from utils.image_utils import pad_image_blur
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,6 @@ class ImmichProvider:
         r = requests.get(f"{self.base_url}/api/assets/{asset_id}/original", headers=self.headers)
         r.raise_for_status()
         return Image.open(BytesIO(r.content))
-
 
 class ImageAlbum(BasePlugin):
     def generate_settings_template(self):
