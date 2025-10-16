@@ -1,4 +1,5 @@
 import logging
+import os
 from random import choice, random
 
 import requests
@@ -135,5 +136,9 @@ class ImageAlbum(BasePlugin):
             else:
                 background_color = ImageColor.getcolor(settings.get('backgroundColor') or (255, 255, 255), "RGB")
                 return ImageOps.pad(img, dimensions, color=background_color, method=Image.Resampling.LANCZOS)
+
+        shutdown_delay = 5
+        logger.info(f"Shutting down in {shutdown_delay} minutes.")
+        os.system(f"sudo shutdown +{shutdown_delay}")
 
         return img
