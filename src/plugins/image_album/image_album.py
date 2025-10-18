@@ -13,8 +13,9 @@ from utils.image_utils import pad_image_blur
 
 logger = logging.getLogger(__name__)
 
+
 class ImmichProvider:
-    def __init__(self, base_url:str, key:str,orientation:str):
+    def __init__(self, base_url: str, key: str, orientation: str):
         self.base_url = base_url
         self.key = key
         self.orientation = orientation
@@ -40,7 +41,7 @@ class ImmichProvider:
         asset_items = assets_data.get("assets", [])["items"]
         return [asset["id"] for asset in asset_items]
 
-    def get_aligned_asset_ids(self, asset_ids: list[str]) ->list[str]:
+    def get_aligned_asset_ids(self, asset_ids: list[str]) -> list[str]:
         aligned_ids = []
 
         for id in asset_ids:
@@ -60,7 +61,7 @@ class ImmichProvider:
 
         return aligned_ids
 
-    def get_image(self, album:str, settings, repeat=True) -> ImageFile | None:
+    def get_image(self, album: str, settings, repeat=True) -> ImageFile | None:
         try:
             logger.info(f"Getting id for album {album}")
             album_id = self.get_album_id(album)
@@ -70,15 +71,15 @@ class ImmichProvider:
             logger.error(f"Error grabbing image from {self.base_url}: {e}")
             return None
 
-        prev_images: list = settings.get("prev_images", [])
-        asset_ids = [x for x in asset_ids if x not in prev_images]
-        asset_ids = self.get_aligned_asset_ids(asset_ids)
+        prev_images: list[str] = settings.get("prev_images", [])
+        asset_ids = list(set(asset_ids) - set(prev_images))
 
         if not repeat and not asset_ids:
             asset_ids = prev_images
             prev_images = []
             settings["prev_images"] = []
 
+        asset_ids = self.get_aligned_asset_ids(asset_ids)
         asset_id = choice(asset_ids)
 
         if not repeat:
@@ -89,6 +90,7 @@ class ImmichProvider:
         r = requests.get(f"{self.base_url}/api/assets/{asset_id}/original", headers=self.headers)
         r.raise_for_status()
         return Image.open(BytesIO(r.content))
+
 
 class ImageAlbum(BasePlugin):
     def generate_settings_template(self):
@@ -132,7 +134,7 @@ class ImageAlbum(BasePlugin):
                 dimensions = dimensions[::-1]
 
             if settings.get('blur') == "true":
-                img =  pad_image_blur(img, dimensions)
+                img = pad_image_blur(img, dimensions)
             else:
                 background_color = ImageColor.getcolor(settings.get('backgroundColor') or (255, 255, 255), "RGB")
                 img = ImageOps.pad(img, dimensions, color=background_color, method=Image.Resampling.LANCZOS)
