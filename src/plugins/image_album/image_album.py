@@ -104,6 +104,7 @@ class ImageAlbum(BasePlugin):
         random = settings.get("randomize", False)
         random_repetition = settings.get("randomRepetition", False)
         orientation = device_config.get_config("orientation")
+        img = None
 
         match settings.get("albumProvider"):
             case "Immich":
@@ -131,10 +132,10 @@ class ImageAlbum(BasePlugin):
                 dimensions = dimensions[::-1]
 
             if settings.get('blur') == "true":
-                return pad_image_blur(img, dimensions)
+                img =  pad_image_blur(img, dimensions)
             else:
                 background_color = ImageColor.getcolor(settings.get('backgroundColor') or (255, 255, 255), "RGB")
-                return ImageOps.pad(img, dimensions, color=background_color, method=Image.Resampling.LANCZOS)
+                img = ImageOps.pad(img, dimensions, color=background_color, method=Image.Resampling.LANCZOS)
 
         shutdown_delay = 5
         logger.info(f"Shutting down in {shutdown_delay} minutes.")
