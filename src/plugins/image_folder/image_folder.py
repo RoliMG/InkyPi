@@ -3,7 +3,6 @@ from PIL import Image, ImageOps, ImageColor
 import logging
 import os
 import random
-import subprocess
 
 from utils.image_utils import pad_image_blur
 
@@ -33,6 +32,7 @@ class ImageFolder(BasePlugin):
             raise RuntimeError(f"Path is not a directory: {folder_path}")
 
         dimensions = device_config.get_resolution()
+
         if device_config.get_config("orientation") == "vertical":
             dimensions = dimensions[::-1]
 
@@ -46,6 +46,7 @@ class ImageFolder(BasePlugin):
         logger.info(f"Random image selected {image_url}")
 
         img = None
+
         try:
             img = Image.open(image_url)
             img = ImageOps.exif_transpose(img)  # Correct orientation using EXIF
@@ -62,7 +63,5 @@ class ImageFolder(BasePlugin):
 
         if not img:
             raise RuntimeError("Failed to load image, please check logs.")
-
-        subprocess.run("sudo shutdown now")
 
         return img
