@@ -173,3 +173,4 @@ mock_display_output/
 /src/static/scripts/
 /src/static/styles/
 /src/config/device_dev.json
+/src/static/images/current_image.png
