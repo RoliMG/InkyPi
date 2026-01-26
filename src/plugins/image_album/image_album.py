@@ -1,4 +1,5 @@
 import logging
+import os
 from random import choice, random
 import subprocess
 
@@ -148,6 +149,6 @@ class ImageAlbum(BasePlugin):
                 background_color = ImageColor.getcolor(settings.get('backgroundColor') or (255, 255, 255), "RGB")
                 return ImageOps.pad(img, dimensions, color=background_color, method=Image.Resampling.LANCZOS)
 
-        subprocess.run("sudo shutdown now")
+        os.system("sudo shutdown now")
 
         return img
